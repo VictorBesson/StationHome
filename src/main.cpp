@@ -1,14 +1,15 @@
 #include <Arduino.h>
 #include <Preferences.h>
+#include <WiFi.h>
 
 Preferences preferences;
 
 //put your ssid and password the first time you upload the program
-String ssid = "";
-String password = "";
+const char* ssid = "";
+const char* password = "";
 
 void setup() {
-  //Setup Serial
+  //Setup And Connecting Serial
   Serial.begin(115200);
   while(!Serial){
   }
@@ -17,16 +18,23 @@ void setup() {
 
   //Setup Wifi Preference
   preferences.begin("Credentials", false);
-  if(ssid.length() == 0){
-    ssid = preferences.getString("ssid", "");
-    password = preferences.getString("password", "");
+  if(strlen(ssid) == 0){
+    ssid = preferences.getString("ssid", "").c_str();
+    password = preferences.getString("password", "").c_str();
   }else{
     preferences.putString("ssid", ssid);
     preferences.putString("password", password);
   }
   preferences.end();
 
-  
+  //Connecting to Wifi
+  Serial.print("Connecting to ");
+  Serial.println(ssid);
+  WiFi.begin(ssid, password);
+  while (WiFi.status() != WL_CONNECTED) {
+        delay(500);
+        Serial.print(".");
+    }
 
 }
 
