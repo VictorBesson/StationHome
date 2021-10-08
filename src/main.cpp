@@ -8,8 +8,8 @@ AsyncWebServer server(80);
 Preferences preferences;
 
 //put your ssid and password the first time you upload the program
-const char* ssid = "";
-const char* password = "";
+String ssid = "";
+String password = "";
 
 void setup() {
   //Setup And Connecting Serial
@@ -27,19 +27,20 @@ void setup() {
 
   //Setup Wifi Preference
   preferences.begin("Credentials", false);
-  if(strlen(ssid) == 0){
-    ssid = preferences.getString("ssid", "").c_str();
-    password = preferences.getString("password", "").c_str();
+  if(ssid.length() == 0){
+    ssid = preferences.getString("ssid", "none");
+    password = preferences.getString("pass", "none");
   }else{
     preferences.putString("ssid", ssid);
-    preferences.putString("password", password);
+    preferences.putString("pass", password);
   }
   preferences.end();
+  
 
   //Connecting to Wifi
   Serial.print("Connecting to ");
   Serial.println(ssid);
-  WiFi.begin(ssid, password);
+  WiFi.begin(ssid.c_str(), password.c_str());
   while (WiFi.status() != WL_CONNECTED) {
         delay(500);
         Serial.print(".");
@@ -50,6 +51,7 @@ void setup() {
 
   //Setup Route
   server.on("/", HTTP_GET, [](AsyncWebServerRequest *request){
+    Serial.println("Connection sur Home");
       request->send(SPIFFS, "index.html");
   });
 
