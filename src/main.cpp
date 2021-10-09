@@ -51,11 +51,10 @@ void setup() {
 
   //Setup Route
   server.on("/", HTTP_GET, [](AsyncWebServerRequest *request){
-    Serial.println("Connection sur Home");
-      request->send(SPIFFS, "index.html");
+      request->send(SPIFFS, "/index.html");
   });
 
-
+  server.begin();
 
 }
 
