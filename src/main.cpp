@@ -4,12 +4,20 @@
 #include <ESPAsyncWebServer.h>
 #include <SPIFFS.h>
 
+//define for temperature
+#define LM_35_SENSOR1 A0
+#define ADC_RESOLUTION 4096.0
+#define ADC_VREF_mV 5000
+
 AsyncWebServer server(80);
 Preferences preferences;
 
 //put your ssid and password the first time you upload the program
 String ssid = "";
 String password = "";
+
+
+float temperature = 0;
 
 void setup() {
   //Setup And Connecting Serial
@@ -59,4 +67,10 @@ void setup() {
 }
 
 void loop() {
+  //read the temperature
+  int adcVal = analogRead(LM_35_SENSOR1);
+  float milliVolt = adcVal * (ADC_VREF_mV / ADC_RESOLUTION);
+  temperature = milliVolt / 10;
+  Serial.println(temperature);
+  delay(1000);
 }
